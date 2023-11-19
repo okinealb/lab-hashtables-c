@@ -1,4 +1,5 @@
 import java.io.PrintWriter;
+import java.security.ProviderException;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -321,7 +322,27 @@ public class ProbedHashTable<K,V> implements HashTable<K,V> {
    * return the index of an entry we can use to store that key.
    */
   int find(K key) {
-    return Math.abs(key.hashCode()) % this.pairs.length;
+    for (int i = 0; i < this.pairs.length; i ++) {
+      @SuppressWarnings("unchecked")
+      Pair<K,V> pair = (Pair<K,V>) this.pairs[i];
+      if ((pair != null) && (pair.key().equals(key))) {
+        return i;
+      }
+    } // for (each object in the pairs array)
+
+    // Find the `unique` index to set the new pair to.
+    int index = Math.abs(key.hashCode()) % this.pairs.length;
+    // Return either the unique index or repeatedly try indices offset away.
+    if (((Pair<K,V>)pairs[index]).key().equals(key)) {
+      return index;
+    } else {
+      int probed_index = (index + (int) PROBE_OFFSET) % this.pairs.length;
+      while (probed_index % this.pairs.length != index) {
+        probed_index = (probed_index + (int) PROBE_OFFSET) % this.pairs.length;
+        if (((Pair<K,V>)pairs[index]).key().equals(key)) return probed_index;
+      } // Probe until we find an empty cell.
+      return -1; // oof
+    } // else
   } // find(K)
 
 } // class ProbedHashTable<K,V>

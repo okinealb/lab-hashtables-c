@@ -45,7 +45,19 @@ public class HashTableExperiments {
    */
   public static void repeatedSetExpt(PrintWriter pen,
       HashTable<String,String> htab) {
-    // STUB
+    pen.println("Repeated Set Experiment");
+    htab.reportBasicCalls(true);
+    htab.set("alpha", "alpha");
+    htab.dump(pen);
+    htab.set("beta", "beta");
+    htab.dump(pen);
+    htab.set("bravo", "bravo");
+    htab.dump(pen);
+    htab.set("beta", "bravo");
+    htab.dump(pen);
+    htab.reportBasicCalls(false);
+    checkGet(pen, htab, "beta");
+    pen.println();
   } // repeatedSetExpt(PrintWriter, HashTable)
 
   /**
@@ -111,7 +123,13 @@ public class HashTableExperiments {
    */
   public static void removeExpt(PrintWriter pen,
       HashTable<String,String> htab) {
-    // STUB
+    htab.set("anteater", "anteater");
+    htab.set("buffalo", "buffalo");
+    htab.dump(pen);
+    pen.println("Removing anteater ... ");
+    htab.remove("anteater");
+    pen.println("Getting anteater ... ");
+    checkGet(pen, htab, "anteater");
   } // removeExpt(PrintWriter, HashTable)
 
 } // class HashTableExpt
